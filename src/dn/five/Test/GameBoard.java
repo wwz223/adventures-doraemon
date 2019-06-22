@@ -1,11 +1,13 @@
 package dn.five.Test;
 
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
@@ -37,12 +39,13 @@ public class GameBoard extends JPanel implements KeyListener{
 	public static int marginY = 0;
 	
 	//游戏状态
-	static final int WaitGame = 1;
-	static final int inGame = 2;
+//	static final int WaitGame = 1;
+//	static final int inGame = 2;
+	
 	public static BufferedImage start;
 	public static BufferedImage pause;
 	public static BufferedImage gameover;
-	public static BufferedImage background1;
+	public static BufferedImage victory;
 	
 	/*写游戏的状态常量*/
 	public static final int START = 0;
@@ -89,12 +92,21 @@ public class GameBoard extends JPanel implements KeyListener{
 			{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0},
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		};
+	//加载背景音乐
+	String [] music={"../bgm/bgm.mp3","../bgm/lost.wav","../bgm/win.mp3"};
+	URL file=getClass().getResource(music[0]);
+	URL file1=getClass().getResource(music[1]);
+	URL file2=getClass().getResource(music[2]);
+		
+	AudioClip soundbgm =java.applet.Applet.newAudioClip(file);
+	AudioClip soundlost =java.applet.Applet.newAudioClip(file1);
+	AudioClip soundwin =java.applet.Applet.newAudioClip(file2);
 	//加载图片
 	static {
 		start = loadImage("/img/start.jpg");
 		pause = loadImage("/img/pause.png");
 		gameover = loadImage("/img/gameover.png");
-		background1 = loadImage("/img/background1.png");
+		victory = loadImage("/img/victory.jpg");
 	}
 	/*加载图片的方法 fileName是图片路劲*/
 	public static BufferedImage loadImage(String fileName) {
@@ -125,7 +137,7 @@ public class GameBoard extends JPanel implements KeyListener{
 					}
 				}
 			}
-			System.out.println(beans.length);
+//			System.out.println(beans.length);
 		}
 		for(i=0;i<5;i++) {
 			for(j= 0;j<(i*2+1);j++) {
@@ -232,9 +244,11 @@ public class GameBoard extends JPanel implements KeyListener{
 	}
 	
 	
-	
+	//主面板
 	public GameBoard() {
-
+		//循环播放背景音乐
+		soundbgm.loop();
+		
 		init();
 		Timer timer = new Timer();
 		/*定时器*/
@@ -267,6 +281,8 @@ public class GameBoard extends JPanel implements KeyListener{
 							System.exit(0);
 						}
 						if(eater.isHitEnemy(enemys)) {
+							soundbgm.stop();
+							soundlost.play();
 							eater.setState(DEAD);
 							state = OVER;
 						}
@@ -293,9 +309,20 @@ public class GameBoard extends JPanel implements KeyListener{
 						}
 					}
 				}else if(state == VICTORY) {
+					soundbgm.stop();
+					soundwin.play();
 					System.out.println("通关了");
 					JOptionPane.showMessageDialog(null, "Victory！！！ 你真优秀！！");
 					System.exit(0);
+				}else if (state ==OVER ) {
+					int result =JOptionPane.showConfirmDialog(null, "借我一条命！！！");
+					if(result !=JOptionPane.OK_OPTION){
+						System.exit(0);
+					}				
+					state=PLAYING;
+					eater.setX(13*40);
+					eater.setY(17*40);
+					eater.setState(START);
 				}
 			}
 		},0,15);
@@ -363,14 +390,16 @@ public class GameBoard extends JPanel implements KeyListener{
 		g.drawString(String.valueOf(beanNum),0, 10);
 		switch(state) {
 			case START:
-				g.drawImage(start, 400,50,null);
+				g.drawImage(start, 0,0,null);
 				break;
 			case PAUSE:
-				g.drawImage(pause, 400,50,null);
+				g.drawImage(pause,400,50,null);  	
 				break;
 			case OVER:
-				g.drawImage(gameover,400,50, null);
+				g.drawImage(gameover,0,0, null);
 				break;
+			case VICTORY:
+				g.drawImage(victory, 0, 0,null);
 			default:break;
 		}
 	}	
