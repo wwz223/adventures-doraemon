@@ -10,7 +10,7 @@
     
 最后盘来盘去，终于盘出一个比较圆润一点的小游戏
     
-![blockchain](https://github.com/wwz223/adventures-doraemon/blob/master/ScreenShots/p-4.png)
+![blockchain](https://github.com/wwz223/adventures-doraemon/blob/master/ScreenShots/p-4.gif)
     
 >游戏的逻辑主要是这样，在几百万年前的火星上，一群外来生物正要攻占火星，勇敢而充满正义的哆啦A梦为了保卫自己的家园，与入侵者展开了一场激烈的搏斗。。。
     
